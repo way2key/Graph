@@ -5,8 +5,8 @@ var players = [
 ];
 
 var edgeNumber = {
-  "hamlet":   {quantity:3, edges:2},
-  "village":  {quantity:2, edges:3},
+  "hamlet":   {quantity:3, edges:1},
+  "village":  {quantity:2, edges:2},
   "city":     {quantity:1, edges:4}
 };
 
@@ -22,6 +22,8 @@ function setup() {
 function draw() {
   fill(255);
   map.draw();
+
+//shuffle(map.nodes);
 }
 
 
@@ -53,7 +55,7 @@ class Graph {
     }
 
     for(let node of this.nodes){
-      node.neighbours = node.getNeighbours(this.nodes,node.edges);
+      node.neighbours = node.getNeighbours(this.nodes, node.edges);
     }
   }
 
@@ -87,10 +89,10 @@ class Node {
       case 4:
         fill('rgb(255,0,0)');
         break;
-      case 3:
+      case 2:
         fill('rgb(0,255,0)');
         break;
-      case 2:
+      case 1:
         fill('rgb(0,0,255)');
         break;
       default:
@@ -103,10 +105,13 @@ class Node {
   getNeighbours(nodes, number){
     var distances = [];
     for(let node of nodes){
-      distances.push(dist(node.x,node.y,this.x,this.y));
+      if(node.neighbours.length <= node.edges){
+        distances.push(dist(node.x,node.y,this.x,this.y));
+      }
     }
     return sortIndex(distances).splice(1,number);
   }
+
 }
 
 function sortIndex(toSort) {
@@ -117,4 +122,23 @@ function sortIndex(toSort) {
   ).map(
     (e,i) => {return e.index;},[]
   );
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
